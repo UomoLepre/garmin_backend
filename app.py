@@ -1,8 +1,6 @@
-# flask-api/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-#import multimodal_garment_designer 
-
+import base64
 
 app = Flask(__name__)
 CORS(app, resources={r"/generate-design": {"origins": "*"}})
@@ -10,14 +8,23 @@ CORS(app, resources={r"/generate-design": {"origins": "*"}})
 
 @app.route('/generate-design', methods=['POST'])
 def generate_design():
-    #data = request.json
-    #text_input = data["text"]  
-    #draw_input = data["drawing"]
+    data = request.json
 
-    #return output
-    return jsonify(output="Hello world")
-    #call to the model
-    #output = multimodal_garment_designer.generate(input_data)
+    # Extract image and json
+    image_data = data.get('image')
+    design_data = data.get('designData')
+
+    ## Extract image
+    if image_data:
+        image_bytes = base64.b64decode(image_data.split(',')[1])  # Decodifica la parte base64
+        with open("received_design.png", "wb") as image_file:
+            image_file.write(image_bytes)
+    
+    # Update JSON
+    design_data['status'] = 'success'
+    design_data['message'] = 'Design received and processed'
+    
+    return jsonify(design_data)
     
  
 
