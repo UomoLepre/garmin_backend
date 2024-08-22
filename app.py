@@ -7,7 +7,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, resources={r"/generate-design": {"origins": "*"}})
 
-app.config['DEBUG'] = True
 
 @app.route('/generate-design', methods=['POST'])
 def generate_design():
@@ -23,4 +22,4 @@ def generate_design():
  
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run()
