@@ -1,12 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import base64
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
-CORS(app, resources={r"/generate-design": {"origins": "*"}})
+CORS(app, resources={r"/generate-design": {"origins": "https://uomolepre-github-io.vercel.app"}})
 
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["10 per minute"]  # Limita a 10 richieste al minuto per ogni IP
+)
 
 @app.route('/generate-design', methods=['POST'])
+@limiter.limit("10 per minute")
+
 def generate_design():
     data = request.json
 
